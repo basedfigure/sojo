@@ -52,9 +52,9 @@ type
   m16_t = packed object
     {axes}sx,sy,sz,ux,uy,uz,fx,fy,fz,{trans - proj}tx,ty,tz,px,py,pz,w: double;
     { Proc }
-    procedure id;
-    procedure look(const at, pos, up: xyz_t);
-    procedure pers(fov, asp, z1, z2: single);
+    procedure id ();
+    procedure look (const at, pos, up: xyz_t);
+    procedure pers (fov, rat, z1, z2: single);
     { Func }
     function col: m16_a;
   end;
@@ -174,13 +174,13 @@ begin
   w :=1;
 end;
 
-procedure m16_t.pers (fov,asp,z1,z2: single);
+procedure m16_t.pers (fov,rat,z1,z2: single);
 var
   f: single;
 begin
   id;
-  f:=1.0 / Tan(fov * 0.5 * PI/180);
-  sx:=f / asp;
+  f:=1.0 / Tan (fov * 0.5 * PI/180);
+  sx:=f / rat;
   uy:=f;
   fz:=(z1 + z2) / (z1 - z2);
   tz:=(2 * z1 * z2) / (z1 - z2);

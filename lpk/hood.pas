@@ -2,13 +2,13 @@
   This source is only used to compile and install the package.
  }
 
-unit jaja;
+unit hood;
 
 {$warn 5023 off : no warning about unused units}
 interface
 
 uses
-  fmtmod, gl1draw, typmath, fmt2d, LazarusPackageIntf;
+  fmt2d, fmtmod, game3d, gl1draw, typmath, iniutil, LazarusPackageIntf;
 
 implementation
 
@@ -17,5 +17,5 @@ begin
 end;
 
 initialization
-  RegisterPackage('jaja', @Register);
+  RegisterPackage('hood', @Register);
 end.

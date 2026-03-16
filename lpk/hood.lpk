@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="5">
-    <Name Value="jaja"/>
+    <Name Value="hood"/>
     <Type Value="RunAndDesignTime"/>
     <CompilerOptions>
       <Version Value="11"/>
@@ -12,8 +12,16 @@
     </CompilerOptions>
     <Files>
       <Item>
+        <Filename Value="fmt2d.pas"/>
+        <UnitName Value="fmt2d"/>
+      </Item>
+      <Item>
         <Filename Value="fmtmod.pas"/>
         <UnitName Value="fmtmod"/>
+      </Item>
+      <Item>
+        <Filename Value="game3d.pas"/>
+        <UnitName Value="game3d"/>
       </Item>
       <Item>
         <Filename Value="gl1draw.pas"/>
@@ -24,12 +32,8 @@
         <UnitName Value="typmath"/>
       </Item>
       <Item>
-        <Filename Value="../../juju/lpk/juju.lpk"/>
-        <Type Value="Text"/>
-      </Item>
-      <Item>
-        <Filename Value="fmt2d.pas"/>
-        <UnitName Value="fmt2d"/>
+        <Filename Value="iniutil.pas"/>
+        <UnitName Value="iniutil"/>
       </Item>
     </Files>
     <RequiredPkgs>

@@ -5,17 +5,22 @@ unit gl1draw;
 interface
 
 uses
-  Classes, SysUtils, gl,
+  Classes, SysUtils, gl, OpenGLContext,
   // Juju:
   typutil,
-  // Jaja:
+  // Hood:
   typmath, fmtmod;
 
-  procedure gl1_draw_tris(const fa: face_a);
-  procedure gl1_draw_mods(const ma: mod_a);
+  procedure gl1_draw_tris (const fa: face_a);
+  procedure gl1_draw_mods (const ma: mod_a);
+
+var
+  hood_port:  TOpenGLControl;
+
+
 implementation
 
-procedure gl1_draw_tris(const fa: face_a);
+procedure gl1_draw_tris (const fa: face_a);
 
   procedure draw_v(const v: vert_t);
   begin
@@ -37,7 +42,7 @@ begin
   glEnd();
 end;
 
-procedure gl1_draw_mods(const ma: mod_a);
+procedure gl1_draw_mods (const ma: mod_a);
 var
   i: int;
 begin

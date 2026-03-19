@@ -53,6 +53,7 @@ type
     {axes}sx,sy,sz,ux,uy,uz,fx,fy,fz,{trans - proj}tx,ty,tz,px,py,pz,w: double;
     { Proc }
     procedure id ();
+    procedure mul (const m:  m16_t);
     procedure look (const at, pos, up: xyz_t);
     procedure pers (fov, rat, z1, z2: single);
     { Func }
@@ -136,6 +137,29 @@ procedure m16_t.id;
 begin
   { axes } sx:=1; sy:=0; sz:=0; ux:=0; uy:=1; uz:=0; fx:=0; fy:=0; fz:=1;
   { trans - proj } tx:=0; ty:=0; tz:=0; px:=0; py:=0; pz:=0; w:=1;
+end;
+
+procedure m16_t.mul (const m:  m16_t);
+var
+  m16:  m16_t;
+begin
+  m16.sx:=sx * m.sx + sy * m.ux + sz * m.fx + tx * m.px;
+  m16.sy:=sx * m.sy + sy * m.uy + sz * m.fy + tx * m.py;
+  m16.sz:=sx * m.sz + sy * m.uz + sz * m.fz + tx * m.pz;
+  m16.tx:=sx * m.tx + sy * m.ty + sz * m.tz + tx * m.w;
+  m16.ux:=ux * m.sx + uy * m.ux + uz * m.fx + ty * m.px;
+  m16.uy:=ux * m.sy + uy * m.uy + uz * m.fy + ty * m.py;
+  m16.uz:=ux * m.sz + uy * m.uz + uz * m.fz + ty * m.pz;
+  m16.ty:=ux * m.tx + uy * m.ty + uz * m.tz + ty * m.w;
+  m16.fx:=fx * m.sx + fy * m.ux + fz * m.fx + tz * m.px;
+  m16.fy:=fx * m.sy + fy * m.uy + fz * m.fy + tz * m.py;
+  m16.fz:=fx * m.sz + fy * m.uz + fz * m.fz + tz * m.pz;
+  m16.tz:=fx * m.tx + fy * m.ty + fz * m.tz + tz * m.w;
+  m16.px:=px * m.sx + py * m.ux + pz * m.fx + w * m.px;
+  m16.py:=px * m.sy + py * m.uy + pz * m.fy + w * m.py;
+  m16.pz:=px * m.sz + py * m.uz + pz * m.fz + w * m.pz;
+  m16.w := px * m.tx + py * m.ty + pz * m.tz + w * m.w;
+  self:=m16;
 end;
 
 procedure m16_t.look (const at,pos,up: xyz_t);

@@ -5,7 +5,7 @@ unit game3d;
 interface
 
 uses
-  Classes, SysUtils, OpenGLContext, gl,
+  Classes, SysUtils, LCLType, LCLIntf, OpenGLContext, gl,
   // Hood
   typmath, glport, iniutil,
   // Juju
@@ -30,9 +30,9 @@ type
   end;
 
 
-  { cam_1st_pers - spectator cam }
+  { cam_1st_pers_t - spectator cam }
 
-  cam_1st_pers = object(cam_t)
+  cam_1st_pers_t = object (cam_t)
     move_rate,
     turn_rate:  f32;
     in_fly_mode:  bool;
@@ -44,9 +44,9 @@ type
   end;
 
 
-  { cam_3rd_pers - shoulder cam }
+  { cam_3rd_pers_t - shoulder cam }
 
-  cam_3rd_pers = object (cam_1st_pers)
+  cam_3rd_pers_t = object (cam_1st_pers_t)
     pos_was:  xyz_t;
     ang_y, ang_y_upto:  double;
   public
@@ -56,6 +56,10 @@ type
     procedure strafe ();
   end;
 
+
+var
+  fst_pers_cam:  cam_1st_pers_t;
+  thd_pers_cam:  cam_3rd_pers_t;
 
 implementation
 
@@ -74,10 +78,12 @@ begin
   fov:=fov_;
   near:=0.1;
   far:=1000;
+
   proj.id ();  // () = visibility,
                //with certain gl calls you do need them, or you get weird errors
   proj.pers (fov_, rat, near, far);
   view.id ();
+
   pos:=xyz (0,5,-20);
   dir:=xyz (0,0,0);
   up:=xyz (0,1,0);
@@ -109,44 +115,77 @@ end;
 
 
 
-{ cam_1st_pers . }
+{ cam_1st_pers_t . }
 
 
 
-constructor cam_1st_pers.init ();
+constructor cam_1st_pers_t.init ();
 begin
   inherited init (hood_port);
   move_rate:=0.3;
   turn_rate:=0.1;
 end;
 
-procedure cam_1st_pers.move ();
+procedure cam_1st_pers_t.move ();
+var
+  v, targ: xyz_t;
+begin
+  if GetKeyState (VK_W) < 0 then begin
+    v:=dir;
+    v.sca (move_rate);
+    pos.add (v);
+  end;
+
+  if GetKeyState (VK_A) < 0 then begin
+    v:=up;
+    v.cross (dir);
+    v.norm ();
+    v.sca (turn_rate);
+    pos.add (v);
+  end;
+
+  if GetKeyState (VK_S) < 0 then begin
+    v:=dir;
+    v.sca (move_rate);
+    pos.sub (v);
+  end;
+
+  if GetKeyState (VK_D) < 0 then begin
+    v:=up;
+    v.cross (dir);
+    v.norm ();
+    v.sca (move_rate);
+    pos.sub (v);
+  end;
+
+  targ:=pos;
+  targ.add (dir);
+
+  view.look (targ, pos, up);
+end;
+
+procedure cam_1st_pers_t.turn (mx:int;  my:int;  mxy_rate:single);
 begin
 
 end;
 
-procedure cam_1st_pers.turn (mx:int;  my:int;  mxy_rate:single);
-begin
-
-end;
 
 
-
-{ cam_3rd_pers . }
+{ cam_3rd_pers_t . }
 
 
 
-constructor cam_3rd_pers.init();
+constructor cam_3rd_pers_t.init();
 begin
   inherited init ();
 end;
 
-procedure cam_3rd_pers.steer ();
+procedure cam_3rd_pers_t.steer ();
 begin
 
 end;
 
-procedure cam_3rd_pers.strafe ();
+procedure cam_3rd_pers_t.strafe ();
 begin
 
 end;

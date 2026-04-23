@@ -40,11 +40,11 @@ type
     constructor init ();
     { Proc }
     procedure move ();
-    procedure turn (mx:int=0;  my:int=0;  mxy_rate:single=0);
+    procedure turn (mx:int=0;  my:int=0;  mxy_rate:double=0);
   end;
 
 
-  { cam_3rd_pers_t - shoulder cam }
+  { cam_3rd_pers_t - player shoulder cam }
 
   cam_3rd_pers_t = object (cam_1st_pers_t)
     pos_was:  xyz_t;
@@ -70,6 +70,7 @@ implementation
 
 
 constructor cam_t.init (win: TOpenGLControl;  const fov_: int=FOV_FPV_INI);
+{ [x] }
 var
   rat:  f32;
 begin
@@ -90,6 +91,7 @@ begin
 end;
 
 procedure cam_t.set_dir ();
+{ [x] }
 begin
   dir.x:=Cos (rot.x) * Sin (rot.y);
   dir.y:=Sin (rot.x);
@@ -99,6 +101,7 @@ begin
 end;
 
 procedure cam_t.set_m16 ();
+{ [x] }
 var
   p, v:  m16_a;
 begin
@@ -120,6 +123,7 @@ end;
 
 
 constructor cam_1st_pers_t.init ();
+{ [x] }
 begin
   inherited init (hood_port);
   move_rate:=0.3;
@@ -127,16 +131,18 @@ begin
 end;
 
 procedure cam_1st_pers_t.move ();
+{ [x] }
 var
   v, targ: xyz_t;
 begin
-  if GetKeyState (VK_W) < 0 then begin
+  // WASD or ULDR
+  if (GetKeyState (VK_W) < 0) or (GetKeyState (VK_UP) < 0) then begin
     v:=dir;
     v.sca (move_rate);
     pos.add (v);
   end;
 
-  if GetKeyState (VK_A) < 0 then begin
+  if (GetKeyState (VK_A) < 0) or (GetKeyState (VK_LEFT) < 0) then begin
     v:=up;
     v.cross (dir);
     v.norm ();
@@ -144,13 +150,13 @@ begin
     pos.add (v);
   end;
 
-  if GetKeyState (VK_S) < 0 then begin
+  if (GetKeyState (VK_S) < 0) or (GetKeyState (VK_DOWN) < 0) then begin
     v:=dir;
     v.sca (move_rate);
     pos.sub (v);
   end;
 
-  if GetKeyState (VK_D) < 0 then begin
+  if (GetKeyState (VK_D) < 0) or (GetKeyState (VK_RIGHT) < 0) then begin
     v:=up;
     v.cross (dir);
     v.norm ();
@@ -164,9 +170,25 @@ begin
   view.look (targ, pos, up);
 end;
 
-procedure cam_1st_pers_t.turn (mx:int;  my:int;  mxy_rate:single);
+procedure cam_1st_pers_t.turn (mx:int=0;  my:int=0;  mxy_rate:double=0);
+{ [x] }
+const
+  MAX_ROLL = 89.0 * (PI/180);
 begin
+  // mouse (mx, my)
+  rot.y:=rot.y - mx * mxy_rate;
+  rot.x:=rot.x - my * mxy_rate;
 
+  // ULDR - works, but needs key remapping between move & turn (conflict)
+  //if GetKeyState (VK_LEFT)  < 0 then rot.y:=rot.y + turn_rate;
+  //if GetKeyState (VK_RIGHT) < 0 then rot.y:=rot.y - turn_rate;
+  //if GetKeyState (VK_UP)    < 0 then rot.x:=rot.x + turn_rate;
+  //if GetKeyState (VK_DOWN)  < 0 then rot.x:=rot.x - turn_rate;
+  //
+  if rot.x > MAX_ROLL then rot.x:=MAX_ROLL;
+  if rot.x < -MAX_ROLL then rot.x:=-MAX_ROLL;
+
+  set_dir ();
 end;
 
 
